@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import Button from "./components/Button"
 import {Editor, EditorState, RichUtils, ContentState, Modifier, ContentBlock, SelectionState } from 'draft-js';
 import 'draft-js/dist/Draft.css';
@@ -11,8 +10,7 @@ const styleMap = {
 };
 
 function App() {
-  const { editorState, setEditorState, handleSave } = useEditor()
-  const editor = useRef(null);
+  const { editorState, setEditorState, handleSave, editorRef } = useEditor()
 
   const getNewEditorState = (currentEditorState: EditorState, contentState:ContentState, selection: SelectionState, startOffset: number, replaceText = ' ') => {
     const newContentState = Modifier.replaceText(contentState, selection.merge({
@@ -67,7 +65,7 @@ function App() {
   };
 
 
-  const handleReturn = (event: React.KeyboardEvent, currentEditorState: EditorState) => {
+  const handleReturn = (_: React.KeyboardEvent, currentEditorState: EditorState) => {
     const contentState = currentEditorState.getCurrentContent();
     const selection = currentEditorState.getSelection();
     const currentBlock = contentState.getBlockForKey(selection.getStartKey());
@@ -100,6 +98,7 @@ function App() {
     if (type === 'code-block') {
       return 'highlighted-code-block';
     }
+    return '';
   }
 
   return (
@@ -109,7 +108,7 @@ function App() {
         <Button onClick={handleSave}>Save</Button>
       </div>
       <Editor
-        ref={editor}
+        ref={editorRef}
         customStyleMap={styleMap}
         editorState={editorState}
         blockStyleFn={myBlockStyleFn}

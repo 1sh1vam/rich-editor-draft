@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
-import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { useState, useEffect, useRef } from "react";
+import { Editor, EditorState, convertFromRaw, convertToRaw } from "draft-js";
 
 const useEditor = () => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const editorRef = useRef<Editor>(null);
 
   useEffect(() => {
     handleLoad();
@@ -25,10 +26,12 @@ const useEditor = () => {
         convertFromRaw(parsedContent)
       );
       setEditorState(newEditorState);
+    } else {
+        editorRef.current?.focus();
     }
   };
 
-  return { editorState, setEditorState, handleSave };
+  return { editorState, setEditorState, handleSave, editorRef };
 };
 
 
